@@ -18,6 +18,7 @@ model User {
   budgets            Budget[]
   transactions       Transaction[]
   notifications      Notification[]
+  profile            Profile?
   createdAt          DateTime       @default(now())
 }
 
@@ -42,7 +43,7 @@ model Budget {
   user_id      String
   user         User     @relation(fields: [user_id], references: [id])
   category_id  String
-  category     Category @relation(fields: [category_id], references: [id])
+  category     Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
   limit_amount Decimal  @db.Decimal(10, 2)
   month        String   // e.g., "2026-05"
   createdAt    DateTime @default(now())
@@ -74,4 +75,14 @@ model Notification {
   message   String
   is_read   Boolean  @default(false)
   createdAt DateTime @default(now())
+}
+
+model Profile {
+  id             String   @id @default(uuid())
+  user_id        String   @unique
+  user           User     @relation(fields: [user_id], references: [id])
+  shortTermGoal  String?
+  longTermGoal   String?
+  notes          String?
+  updatedAt      DateTime @updatedAt
 }

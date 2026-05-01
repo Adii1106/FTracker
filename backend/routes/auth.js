@@ -10,6 +10,11 @@ const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret';
 router.post('/register', async (req, res) => {
   try {
     const { name, email, password } = req.body;
+    
+    if (!email || !email.includes('@') || !password || password.length < 6) {
+      return res.status(400).json({ error: 'Valid email and password (min 6 chars) are required' });
+    }
+
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) return res.status(400).json({ error: 'Email already in use' });
 
