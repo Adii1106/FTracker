@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../api';
 import { formatCurrency } from '../utils';
 import { TrendingUp, TrendingDown, Wallet, Clock } from 'lucide-react';
