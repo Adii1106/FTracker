@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import api from '../api';
+import { ListTree, Plus, Trash2, ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
 
 export default function Categories() {
   const [categories, setCategories] = useState([]);
@@ -26,45 +27,72 @@ export default function Categories() {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Delete category?')) {
+    if (window.confirm('Delete this category? This will also remove any budgets associated with it.')) {
       await api.delete(`/categories/${id}`);
       fetchCategories();
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto flex gap-8">
-      <div className="flex-1">
-        <h2 className="text-xl font-bold mb-4">Your Categories</h2>
-        <ul className="space-y-2">
-          {categories.map(c => (
-            <li key={c.id} className="p-3 bg-white border rounded flex justify-between items-center">
-              <div>
-                <span className="font-bold">{c.name}</span>
-                <span className={`ml-2 text-xs px-2 py-1 rounded ${c.type === 'INCOME' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{c.type}</span>
+    <div className="max-w-5xl mx-auto flex flex-col md:flex-row gap-8">
+      <div className="flex-1 space-y-4">
+        <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+          <ListTree size={20} className="text-blue-600" />
+          Manage Categories
+        </h2>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {categories.length === 0 ? (
+            <div className="col-span-2 card p-12 text-center text-gray-500">No categories found. Add one to get started!</div>
+          ) : categories.map(c => (
+            <div key={c.id} className="card p-4 flex justify-between items-center group">
+              <div className="flex items-center gap-3">
+                <div className={`p-2 rounded-lg ${c.type === 'INCOME' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
+                  {c.type === 'INCOME' ? <ArrowUpCircle size={18} /> : <ArrowDownCircle size={18} />}
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900">{c.name}</p>
+                  <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">{c.type}</p>
+                </div>
               </div>
-              <button onClick={() => handleDelete(c.id)} className="text-red-600 text-sm hover:underline">Delete</button>
-            </li>
+              <button onClick={() => handleDelete(c.id)} className="text-gray-300 hover:text-red-600 transition-colors">
+                <Trash2 size={18} />
+              </button>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
       
-      <div className="w-1/3 bg-white p-6 border rounded shadow-sm h-fit">
-        <h2 className="text-lg font-bold mb-4">Add Category</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm mb-1">Name</label>
-            <input type="text" value={name} onChange={e => setName(e.target.value)} required className="w-full border p-2 rounded" />
-          </div>
-          <div>
-            <label className="block text-sm mb-1">Type</label>
-            <select value={type} onChange={e => setType(e.target.value)} className="w-full border p-2 rounded">
-              <option value="EXPENSE">Expense</option>
-              <option value="INCOME">Income</option>
-            </select>
-          </div>
-          <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded">Add</button>
-        </form>
+      <div className="md:w-80">
+        <div className="sticky top-24 card p-6">
+          <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+            <Plus size={20} className="text-blue-600" />
+            Add New
+          </h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Category Name</label>
+              <input 
+                type="text" 
+                value={name} 
+                onChange={e => setName(e.target.value)} 
+                required 
+                className="input-field" 
+                placeholder="e.g. Groceries, Salary"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Transaction Type</label>
+              <select value={type} onChange={e => setType(e.target.value)} className="input-field bg-white">
+                <option value="EXPENSE">Expense</option>
+                <option value="INCOME">Income</option>
+              </select>
+            </div>
+            <button type="submit" className="btn-primary w-full py-3 flex items-center justify-center gap-2">
+              <Plus size={20} /> Create Category
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
