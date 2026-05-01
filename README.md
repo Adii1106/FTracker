@@ -64,5 +64,3 @@ Don't want to register? Use our demo account:
 - **Email**: `demo@example.com`
 - **Password**: `password123`
 
-## 📄 License
-Distributed under the MIT License.
