@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String         @id @default(uuid())
+  name               String
+  email              String         @unique
+  password           String?
+  google_id          String?
+  preferred_currency String         @default("USD")
+  categories         Category[]
+  budgets            Budget[]
+  transactions       Transaction[]
+  notifications      Notification[]
+  createdAt          DateTime       @default(now())
+}
+
+model Category {
+  id           String        @id @default(uuid())
+  user_id      String
+  user         User          @relation(fields: [user_id], references: [id])
+  name         String
+  type         CategoryType
+  budgets      Budget[]
+  transactions Transaction[]
+  createdAt    DateTime      @default(now())
+}
+
+enum CategoryType {
+  INCOME
+  EXPENSE
+}
+
+model Budget {
+  id           String   @id @default(uuid())
+  user_id      String
+  user         User     @relation(fields: [user_id], references: [id])
+  category_id  String
+  category     Category @relation(fields: [category_id], references: [id])
+  limit_amount Decimal  @db.Decimal(10, 2)
+  month        String   // e.g., "2026-05"
+  createdAt    DateTime @default(now())
+
+  @@unique([user_id, category_id, month])
+}
+
+model Transaction {
+  id          String       @id @default(uuid())
+  user_id     String
+  user        User         @relation(fields: [user_id], references: [id])
+  category_id String?
+  category    Category?    @relation(fields: [category_id], references: [id], onDelete: SetNull)
+  type        CategoryType
+  amount      Decimal      @db.Decimal(10, 2)
+  currency    String       @default("USD")
+  date        DateTime
+  description String
+  receipt_url String?
+  createdAt   DateTime     @default(now())
+
+  @@index([user_id, date])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  user_id   String
+  user      User     @relation(fields: [user_id], references: [id])
+  message   String
+  is_read   Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
