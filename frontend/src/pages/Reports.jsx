@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../api';
 import { formatCurrency } from '../utils';
-import { Calendar, PieChart, TrendingUp, TrendingDown, ChevronRight } from 'lucide-react';
+import { Calendar, PieChart, TrendingUp, TrendingDown, ChevronRight, MessageSquare, Sparkles } from 'lucide-react';
 
 export default function Reports() {
   const [report, setReport] = useState(null);
@@ -112,6 +112,30 @@ export default function Reports() {
           <ChevronRight size={32} />
         </div>
       </div>
+
+      <section className="mt-12 pt-8 border-t border-gray-100">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+            <Sparkles size={20} className="text-blue-600" />
+            AI Financial Assistant
+          </h2>
+          <span className="bg-blue-50 text-blue-600 text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-md">Upcoming</span>
+        </div>
+        
+        <div className="card p-8 bg-gray-50 border-dashed border-2 border-gray-200 flex flex-col items-center justify-center text-center space-y-4">
+          <div className="p-4 bg-white rounded-full shadow-sm text-blue-600">
+            <MessageSquare size={32} />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-gray-900">Ask anything about your spending</h3>
+            <p className="text-gray-500 max-w-sm mt-1">Get personalized insights, savings tips, and financial advice powered by advanced AI.</p>
+          </div>
+          <div className="w-full max-w-lg flex gap-2 opacity-50 pointer-events-none">
+            <input type="text" disabled placeholder="How much did I spend on dining out this week?" className="input-field py-3" />
+            <button className="btn-primary px-6">Ask</button>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
